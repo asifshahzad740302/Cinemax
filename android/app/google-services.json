@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "260127264988",
+    "project_id": "cinemaxmovieapp",
+    "storage_bucket": "cinemaxmovieapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260127264988:android:e9345d3774ce9cd89da419",
+        "android_client_info": {
+          "package_name": "com.example.cinemax_fyp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260127264988-ka8315rtp9q6hlidkmf15qjlnl89e72n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cinemax_fyp",
+            "certificate_hash": "3df48795e1a6a7a03a7a648c0d61ed8400176cc5"
+          }
+        },
+        {
+          "client_id": "260127264988-9g082feidpucgkcj7a1nbl246o4pmabl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDOlPedp0HEvR0MYrPA5-NQEmGUFOjU9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260127264988-9g082feidpucgkcj7a1nbl246o4pmabl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
