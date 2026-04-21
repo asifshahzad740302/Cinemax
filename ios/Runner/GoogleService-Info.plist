@@ -4,8 +4,17 @@
 <dict>
 	<key>CLIENT_ID</key>
 	<string>260127264988-v4685fi289ro766lvacqgd41t4u71vmc.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.260127264988-v4685fi289ro766lvacqgd41t4u71vmc</string>
+	<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>com.googleusercontent.apps.260127264988-v4685fi289ro766lvacqgd41t4u71vmc</string>
+    </array>
+  </dict>
+</array>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>260127264988-3hv3j8e9op2fbci2ith8i1trq5el9una.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
