@@ -8,24 +8,23 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:app_links/app_links.dart';
 import 'Auth/splash_screen.dart';
-import '../Management/MovieProvider.dart';
-import 'Management/TrailorController.dart';
-import 'Management/WishlistProvider.dart';
+import 'package:cinemax_fyp/Management/MovieProvider.dart';
+import 'package:cinemax_fyp/Management/TrailorController.dart';
+import 'package:cinemax_fyp/Management/WishlistProvider.dart';
 
 Future <void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   try {
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
-          // options:  FirebaseOptions(
-          //     apiKey: "AIzaSyAkJxBkFkLrYNjWMlbN9MDRvqnpRgv4X-k",
-          //     authDomain: "cinemaxmovieapp.firebaseapp.com",
-          //     projectId: "cinemaxmovieapp",
-          //     storageBucket: "cinemaxmovieapp.firebasestorage.app",
-          //     messagingSenderId: "260127264988",
-          //     appId: "1:260127264988:web:a137f60356ede2d19da419",
-          //     measurementId: "G-WV9X8MCC6C"
-          // )
+        options: const FirebaseOptions(
+          apiKey: "AIzaSyAMw_Q8TNit7XKt-IiLnYnACPqlrOc8DGI",
+          appId: "1:260127264988:ios:94c81631ea32f0769da419",
+          messagingSenderId: "260127264988",
+          projectId: "cinemaxmovieapp",
+          storageBucket: "cinemaxmovieapp.firebasestorage.app",
+          iosClientId: "260127264988-v4685fi289ro766lvacqgd41t4u71vmc.apps.googleusercontent.com",
+        ),
       );
       print('Firebase initialized successfully');
     }
