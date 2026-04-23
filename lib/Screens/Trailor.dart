@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+// import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../Model/Movie_Model.dart';
 import '../Management/MovieProvider.dart';
 
@@ -44,9 +45,14 @@ class _PlayScreenState extends State<PlayScreen> {
       movieProv.fetchMovieTrailer(widget.movie.id).then((_) {
         if (movieProv.trailerId != null) {
           setState(() {
-            _youtubeController = YoutubePlayerController(
-              initialVideoId: movieProv.trailerId!,
-              flags: const YoutubePlayerFlags(autoPlay: true, mute: false),
+            _youtubeController = YoutubePlayerController.fromVideoId(
+              videoId: movieProv.trailerId!,
+              autoPlay: true,
+              params: const YoutubePlayerParams(
+                mute: false,
+                showControls: true,
+                showFullscreenButton: true,
+              )
             );
           });
         }
@@ -57,7 +63,7 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   void dispose() {
     _videoController?.dispose();
-    _youtubeController?.dispose();
+    _youtubeController?.close();
     super.dispose();
   }
 
@@ -150,7 +156,8 @@ class _PlayScreenState extends State<PlayScreen> {
       return GestureDetector(
         onTap: () {
           setState(() {
-            _videoController!.value.isPlaying ? _videoController!.pause() : _videoController!.play();
+            _videoController!.value.isPlaying ? _videoController!.pause()
+                : _videoController!.play();
           });
         },
         child: Stack(
@@ -170,12 +177,12 @@ class _PlayScreenState extends State<PlayScreen> {
     if (_youtubeController != null) {
       return YoutubePlayer(
         controller: _youtubeController!,
-        showVideoProgressIndicator: true,
-        progressIndicatorColor: const Color(0xff12CDD9),
-          progressColors: const ProgressBarColors(
-            playedColor: Color(0xff12CDD9),
-            handleColor: Color(0xff12CDD9),
-          ),
+        // showVideoProgressIndicator: true,
+        // progressIndicatorColor: const Color(0xff12CDD9),
+        //   progressColors: const ProgressBarColors(
+        //     playedColor: Color(0xff12CDD9),
+        //     handleColor: Color(0xff12CDD9),
+        //   ),
       );
     } else if (movieProv.trailerId == null && !movieProv.isLoading) {
       return Container(color: Colors.black, child: const Center(child: Text("No Trailer Available", style: TextStyle(color: Colors.white))));

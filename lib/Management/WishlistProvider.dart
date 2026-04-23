@@ -1,18 +1,16 @@
+import 'package:cinemax_fyp/Model/Movie_Model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
-import '../Model/Movie_Model.dart';
 
 class WishlistProvider with ChangeNotifier {
-  // Local list to store favorite movies
   final List<MovieModel> _wishlistMovies = [];
 
   List<MovieModel> get wishlistMovies => _wishlistMovies;
   final box = Hive.box('Cinemax');
   final uid = FirebaseAuth.instance.currentUser!.uid;
 
-  // 🔥 LOAD FROM FIRESTORE
   Future<void> loadWishlist() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -30,8 +28,6 @@ class WishlistProvider with ChangeNotifier {
 
     for (var doc in snapshot.docs) {
       final data = doc.data();
-      // _wishlistMovies.add(MovieModel.fromJson(doc.data()));
-      // _wishlistMovies.clear();
 
       _wishlistMovies.add(MovieModel(
           id: data['id'] ?? 0,
@@ -62,7 +58,6 @@ class WishlistProvider with ChangeNotifier {
 
   }
 
-  // 🔥 REMOVE MOVIE
   Future<void> removeFromWishlist(MovieModel movie) async {
     _wishlistMovies.removeWhere((item) => item.id == movie.id);
     notifyListeners();
@@ -89,7 +84,6 @@ class WishlistProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Toggle Logic: If movie exists, remove it. If not, add it.
   Future<void> toggleWishlist(MovieModel movie) async{
     final isExist = _wishlistMovies.any((item) => item.id == movie.id);
 
@@ -101,7 +95,6 @@ class WishlistProvider with ChangeNotifier {
     saveToLocal();
   }
 
-  // Check if a specific movie is in the wishlist
   bool isFavorite(MovieModel movie) {
     return _wishlistMovies.any((item) => item.id == movie.id);
   }

@@ -4,9 +4,9 @@ class MovieModel {
   final String posterPath;
   final String backdropPath;
   final double rating;
-  final List<int> genreIds; // Add this line
-  final String releaseDate; // New Field
-  final String overview;    // New Field
+  final List<int> genreIds;
+  final String releaseDate;
+  final String overview;
 
   MovieModel({
     required this.id,
@@ -14,14 +14,13 @@ class MovieModel {
     required this.posterPath,
     required this.backdropPath,
     required this.rating,
-    required this.genreIds, // Add this line
+    required this.genreIds,
     required this.releaseDate,
     required this.overview,
   });
 
   String get ratingOutOfFive {
     double normalized = rating / 2;
-    // toStringAsFixed(1) ensures "4.234" becomes "4.2"
     return normalized.toStringAsFixed(1);
   }
 
@@ -68,7 +67,7 @@ class MovieModel {
       // rating: (json['vote_average'] as num).toDouble(),
       // genreIds: List<int>.from(json['genre_ids'] ?? []), // Add this line
       // releaseDate: json['release_date'] ?? 'N/A', // Extracting date
-      overview: json['overview'] ?? '',           // Extracting story
+      overview: json['overview'] ?? '',
     );
   }
 }

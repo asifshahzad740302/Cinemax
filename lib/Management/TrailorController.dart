@@ -15,10 +15,9 @@ class TrailerController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadDownloads(); // Load existing trailers on startup
+    loadDownloads();
   }
 
-  // Logic to refresh and sort the list (Newest first)
   Future<void> loadDownloads() async {
     final dir = await getApplicationDocumentsDirectory();
     final directory = Directory(dir.path);
@@ -26,19 +25,17 @@ class TrailerController extends GetxController {
         .where((file) => file.path.endsWith('.mp4'))
         .toList();
 
-    // Sort by modified date
     files.sort((a, b) => b.statSync().modified.compareTo(a.statSync().modified));
     downloadedFiles.assignAll(files);
   }
 
 
-  // 🔹 NEW: Delete Function
   Future<void> deleteTrailer(String filePath) async {
     try {
       final file = File(filePath);
       if (await file.exists()) {
         await file.delete();
-        await loadDownloads(); // Refresh the list
+        await loadDownloads();
         Get.snackbar("Deleted", "Trailer removed from downloads",
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
@@ -53,7 +50,6 @@ class TrailerController extends GetxController {
     final dir = await getApplicationDocumentsDirectory();
     final filePath = "${dir.path}/$movieId.mp4";
 
-    // 1. Check if exists
     if (File(filePath).existsSync()) {
       Get.snackbar("Info", "Trailer already downloaded!");
       return;
@@ -78,7 +74,7 @@ class TrailerController extends GetxController {
 
       yt.close();
       isDownloading.value = false;
-      await loadDownloads(); // Refresh list so new video appears on top
+      await loadDownloads();
     } catch (e) {
       isDownloading.value = false;
       Get.snackbar("Error", "Download failed");

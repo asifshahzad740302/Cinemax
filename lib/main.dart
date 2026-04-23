@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cinemax_fyp/Auth/New_Password.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,13 +19,19 @@ Future <void> main() async{
   try {
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
-        options: const FirebaseOptions(
+        options: Platform.isIOS ? const FirebaseOptions(
           apiKey: "AIzaSyAMw_Q8TNit7XKt-IiLnYnACPqlrOc8DGI",
           appId: "1:260127264988:ios:94c81631ea32f0769da419",
           messagingSenderId: "260127264988",
           projectId: "cinemaxmovieapp",
           storageBucket: "cinemaxmovieapp.firebasestorage.app",
           iosClientId: "260127264988-v4685fi289ro766lvacqgd41t4u71vmc.apps.googleusercontent.com",
+        ) : const FirebaseOptions(
+          apiKey: "AIzaSyAkJxBkFkLrYNjWMlbN9MDRvqnpRgv4X-k",
+          appId: "1:260127264988:android:YOUR_ANDROID_APP_ID",
+          messagingSenderId: "260127264988",
+          projectId: "cinemaxmovieapp",
+          storageBucket: "cinemaxmovieapp.firebasestorage.app",
         ),
       );
       print('Firebase initialized successfully');

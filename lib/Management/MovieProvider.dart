@@ -7,13 +7,12 @@ import 'package:http/http.dart' as http;
 class MovieProvider extends ChangeNotifier {
   final String _apiKey = "fd620a733c2625c7ea268c712f7d9fcd";
 
-  List<MovieModel> _trendingMovies = []; // For Carousel
-  List<MovieModel> _popularMovies = [];  // For Most Popular
+  List<MovieModel> _trendingMovies = [];
+  List<MovieModel> _popularMovies = [];
   bool _isLoading = false;
   final box = Hive.box('Cinemax');
   String? _error;
 
-  // 🔹 NEW: Store runtimes for specific movies
   Map<int, int> _movieRuntimes = {};
   List<MovieModel> get trendingMovies => _trendingMovies;
   List<MovieModel> get popularMovies => _popularMovies;
@@ -21,18 +20,14 @@ class MovieProvider extends ChangeNotifier {
   String? get error => _error;
 
   Map<int, String> _genreMap = {};
-// 🔹 NEW: Getter for runtime
   int getMovieRuntime(int movieId) => _movieRuntimes[movieId] ?? 0;
 
-// Helper to get the first genre name of a movie
   String getGenreName(List<int> ids) {
     if (ids.isEmpty || _genreMap.isEmpty) return "Movie";
     return _genreMap[ids[0]] ?? "Movie";
   }
 
-  // 🔹 NEW: Fetch detailed data (Runtime) for the Detail Screen
   Future<void> fetchMovieDetails(int movieId) async {
-    // If we already have the runtime, don't call the API again
     if (_movieRuntimes.containsKey(movieId)) return;
 
     try {
@@ -41,7 +36,7 @@ class MovieProvider extends ChangeNotifier {
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        _movieRuntimes[movieId] = data['runtime']; // Runtime in minutes
+        _movieRuntimes[movieId] = data['runtime'];
         notifyListeners();
       }
       else{
@@ -113,9 +108,7 @@ class MovieProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Fetching Trending for Carousel
       final trendingRes = await http.get(Uri.parse('https://api.themoviedb.org/3/trending/movie/day?api_key=$_apiKey'));
-      // Fetching Popular for List
       final popularRes = await http.get(Uri.parse('https://api.themoviedb.org/3/movie/popular?api_key=$_apiKey'));
 
       if (trendingRes.statusCode == 200 && popularRes.statusCode == 200) {
@@ -136,7 +129,7 @@ class MovieProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  int _selectedGenreId = -1; // -1 means "All"
+  int _selectedGenreId = -1;
   int get selectedGenreId => _selectedGenreId;
 
   List<MovieModel> get filteredPopularMovies {
@@ -144,19 +137,16 @@ class MovieProvider extends ChangeNotifier {
     return _popularMovies.where((movie) => movie.genreIds.contains(_selectedGenreId)).toList();
   }
 
-  // Update selected genre and refresh UI
   Future<void> setGenre(int id) async {
     _selectedGenreId = id;
-    _isLoading = true; // Show loading spinner while fetching new genre
+    _isLoading = true;
     notifyListeners();
 
     try {
       Uri url;
       if (id == -1) {
-        // If "All" is selected, fetch the standard popular list
         url = Uri.parse('https://api.themoviedb.org/3/movie/popular?api_key=$_apiKey');
       } else {
-        // Use the DISCOVER API to get top movies for this specific genre ID
         url = Uri.parse('https://api.themoviedb.org/3/discover/movie?api_key=$_apiKey&with_genres=$id');
       }
 
@@ -177,7 +167,6 @@ class MovieProvider extends ChangeNotifier {
     }
   }
 
-  // Map for categories list (from API)
   Map<int, String> get genreMap => _genreMap;
 
   List<MovieModel> searchResults = [];
@@ -199,8 +188,6 @@ class MovieProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         List list = jsonDecode(response.body)['results'];
-        // Map<String, dynamic> data = jsonDecode(response.body);
-        // List<dynamic> list = data['results'];
         searchResults = list.map((e) => MovieModel.fromJson(e)).toList();
         box.put('search_$query', searchResults.map((e) => e.toJson()).toList());
       }
@@ -235,7 +222,6 @@ class MovieProvider extends ChangeNotifier {
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        // Get backdrops for the gallery
         List backdrops = data['backdrops'];
         _movieGallery = backdrops.take(10).map((i) => i['file_path'].toString()).toList();
         notifyListeners();
@@ -249,7 +235,7 @@ class MovieProvider extends ChangeNotifier {
   String? get trailerId => _trailerId;
 
 Future<void> fetchMovieTrailer(int movieId) async {
-  _trailerId = null; // Reset before fetching
+  _trailerId = null;
   try {
     final response = await http.get(
       Uri.parse('https://api.themoviedb.org/3/movie/$movieId/videos?api_key=$_apiKey')
@@ -257,14 +243,13 @@ Future<void> fetchMovieTrailer(int movieId) async {
     if (response.statusCode == 200) {
       final List results = jsonDecode(response.body)['results'];
       
-      // Find the official YouTube trailer
       final trailer = results.firstWhere(
         (v) => v['type'] == 'Trailer' && v['site'] == 'YouTube',
         orElse: () => results.isNotEmpty ? results[0] : null,
       );
 
       if (trailer != null) {
-        _trailerId = trailer['key']; // This is the YouTube ID (e.g., "d9MyW72ELq0")
+        _trailerId = trailer['key'];
         notifyListeners();
       }
     }
