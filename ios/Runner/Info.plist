@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Cinemax Fyp</string>
+	<string>Cinemax</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -44,6 +44,32 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>GIDClientID</key>
+	<string>260127264988-v4685fi289ro766lvacqgd41t4u71vmc.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.260127264988-v4685fi289ro766lvacqgd41t4u71vmc</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to take photos</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photo library access to select images</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access</string>
+	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 </dict>
 </plist>
