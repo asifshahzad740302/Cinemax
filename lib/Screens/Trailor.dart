@@ -4,8 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-// import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../Model/Movie_Model.dart';
 import '../Management/MovieProvider.dart';
 
@@ -24,6 +23,8 @@ class _PlayScreenState extends State<PlayScreen> {
   YoutubePlayerController? _youtubeController;
   bool isOffline = false;
 
+
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +33,7 @@ class _PlayScreenState extends State<PlayScreen> {
 
   Future<void> _checkOfflineAndInitialize() async {
     final movieProv = Provider.of<MovieProvider>(context, listen: false);
+
     final dir = await getApplicationDocumentsDirectory();
     final localFile = File("${dir.path}/${widget.movie.id}.mp4");
       if (await localFile.exists()) {
@@ -45,14 +47,9 @@ class _PlayScreenState extends State<PlayScreen> {
       movieProv.fetchMovieTrailer(widget.movie.id).then((_) {
         if (movieProv.trailerId != null) {
           setState(() {
-            _youtubeController = YoutubePlayerController.fromVideoId(
-              videoId: movieProv.trailerId!,
-              autoPlay: true,
-              params: const YoutubePlayerParams(
-                mute: false,
-                showControls: true,
-                showFullscreenButton: true,
-              )
+            _youtubeController = YoutubePlayerController(
+              initialVideoId: movieProv.trailerId!,
+              flags: const YoutubePlayerFlags(autoPlay: true, mute: false),
             );
           });
         }
@@ -63,7 +60,7 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   void dispose() {
     _videoController?.dispose();
-    _youtubeController?.close();
+    _youtubeController?.dispose();
     super.dispose();
   }
 
@@ -74,17 +71,22 @@ class _PlayScreenState extends State<PlayScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF1F1D2B),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(movie.title, style: GoogleFonts.montserrat(fontSize: 16)),
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 30,),
             AspectRatio(
               aspectRatio: 16 / 9,
               child: isOffline
                   ? _buildLocalPlayer()
                   : _buildYoutubePlayer(movieProv),
             ),
+
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -106,6 +108,7 @@ class _PlayScreenState extends State<PlayScreen> {
                   ),
 
                   const SizedBox(height: 24),
+
                   Text("Synopsis",
                       style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
                   const SizedBox(height: 10),
@@ -113,35 +116,34 @@ class _PlayScreenState extends State<PlayScreen> {
                       style: GoogleFonts.montserrat(color: Colors.white70, height: 1.5, fontSize: 14)),
 
                   const SizedBox(height: 24),
+
                   Text("Gallery",
                       style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
                   const SizedBox(height: 12),
                   movieProv.movieGallery.isEmpty
-                      ? const Center(child: Icon(Icons.broken_image, size: 50, color: Color(0xff252836))) :
-                  SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: movieProv.movieGallery.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              "https://image.tmdb.org/t/p/w300${movieProv
-                                  .movieGallery[index]}",
-                              width: 160,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
-                                  Icons.broken_image, color: Colors.grey),
-                            ),
+                      ? const Center(child: Icon(Icons.broken_image, size: 50, color: Color(0xff252836)))
+                      : SizedBox(
+                          height: 100,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: movieProv.movieGallery.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 12),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    "https://image.tmdb.org/t/p/w300${movieProv.movieGallery[index]}",
+                                    width: 160,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        const Icon(Icons.broken_image, color: Colors.grey),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                  ),
+                        ),
                 ],
               ),
             ),
@@ -156,8 +158,7 @@ class _PlayScreenState extends State<PlayScreen> {
       return GestureDetector(
         onTap: () {
           setState(() {
-            _videoController!.value.isPlaying ? _videoController!.pause()
-                : _videoController!.play();
+            _videoController!.value.isPlaying ? _videoController!.pause() : _videoController!.play();
           });
         },
         child: Stack(
@@ -177,16 +178,17 @@ class _PlayScreenState extends State<PlayScreen> {
     if (_youtubeController != null) {
       return YoutubePlayer(
         controller: _youtubeController!,
-        // showVideoProgressIndicator: true,
-        // progressIndicatorColor: const Color(0xff12CDD9),
-        //   progressColors: const ProgressBarColors(
-        //     playedColor: Color(0xff12CDD9),
-        //     handleColor: Color(0xff12CDD9),
-        //   ),
+        showVideoProgressIndicator: true,
+        progressIndicatorColor: const Color(0xff12CDD9),
+          progressColors: const ProgressBarColors(
+            playedColor: Color(0xff12CDD9),
+            handleColor: Color(0xff12CDD9),
+          ),
       );
     } else if (movieProv.trailerId == null && !movieProv.isLoading) {
       return Container(color: Colors.black, child: const Center(child: Text("No Trailer Available", style: TextStyle(color: Colors.white))));
     }
     return const Center(child: CircularProgressIndicator(color: Color(0xff12CDD9)));
   }
+
 }
